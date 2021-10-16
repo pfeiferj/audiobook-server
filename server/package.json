@@ -1,11 +1,10 @@
 {
-  "name": "audiobook-server",
+  "name": "server",
   "version": "0.1.0",
-  "description": "stream audiobooks",
   "main": "index.js",
   "author": "Jacob Pfeifer",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js"
