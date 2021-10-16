@@ -1,0 +1,13 @@
+{
+  "name": "audiobook-server",
+  "version": "0.1.0",
+  "description": "stream audiobooks",
+  "main": "index.js",
+  "author": "Jacob Pfeifer",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^4.1.3"
+  }
+}
