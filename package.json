@@ -1,0 +1,33 @@
+{
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "name": "audiobook-server",
+  "version": "0.1.0",
+  "description": "A server and client for hosting and streaming audiobooks",
+  "scripts": {
+    "test": "npm test -w client -- --watchAll=false && npm test -w server",
+    "build": "npm run build -w client",
+    "start": "npm start -w server",
+    "start:build": "npm run build && npm start",
+    "dev": "concurrently \"npm run watch -w server\" \"npm start -w client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pfeiferj/audiobook-server.git"
+  },
+  "author": "Jacob Pfeifer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pfeiferj/audiobook-server/issues"
+  },
+  "homepage": "https://github.com/pfeiferj/audiobook-server#readme",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "devDependencies": {
+    "concurrently": "^6.3.0"
+  }
+}

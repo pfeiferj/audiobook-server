@@ -91,9 +91,10 @@ async function main() {
   return 'done.';
 }
 
+app.use('/', express.static('../client/build'));
+
 main()
   .then(console.log)
   .catch(console.error)
 
 //ffprobe -i assets/book.m4a -print_format json -show_chapters -show_format -loglevel error
- 
