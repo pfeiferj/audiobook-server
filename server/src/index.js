@@ -5,7 +5,7 @@ import { exec as nodeExec } from 'child_process';
 import cors from 'cors';
 import path from 'path';
 import {db} from './models/index.js';
-console.log('started')
+import get from 'lodash/get.js';
 
 const app = express()
 const exec = util.promisify(nodeExec);
@@ -89,12 +89,31 @@ app.get('/book/cover', async (req, res) => {
   res.send(cover);
 });
 
+app.get('/books', async (req, res) => {
+  res.send(await getBooks());
+});
+
 app.use('/', express.static('../client/build'));
 
+async function getBooks() {
+  const bookFiles = fs.readdirSync('books').filter(path => path !== '.gitignore');
+  const books = [];
+  for(const bookPath of bookFiles) {
+    const bookMetadata = await getMetadata(getBookPath(bookPath));
+    const title = get(bookMetadata, "format.tags.title", bookPath);
+    books.push({
+      title,
+      path: bookPath,
+      metadata: bookMetadata
+    });
+  }
+  return books;
+}
+
 function getBookPath(filename) {
-  const bookPath = path.join('assets', filename)
-  if(!bookPath.startsWith('assets' + path.sep)){
-    throw new Error('Book path not in assets directory');
+  const bookPath = path.join('books', filename)
+  if(!bookPath.startsWith('books' + path.sep)){
+    throw new Error('Book path not in books directory');
   }
   return bookPath;
 }
