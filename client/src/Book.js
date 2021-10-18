@@ -30,14 +30,18 @@ export default function Book() {
       .catch(e => console.error(e));
 
 
+  }, [book]);
+
+  useEffect(() => {
     axios.get('http://localhost:3001/book/position?filename=' + book)
       .then(response => {
         if(response.data.length) {
           player.current.audio.current.currentTime = response.data[0].position;
         }
+        player.current.audio.current.play()
       })
       .catch(e => console.error(e));
-  }, [book]);
+  }, [book, player]);
 
   async function onListen(event) {
     updatePosition(book, event.target.currentTime, positionId, setPositionId);
@@ -54,7 +58,6 @@ export default function Book() {
     <div className="Book">
       <img alt="Book cover art" src={"http://localhost:3001/book/cover?filename="+book} />
       <AudioPlayer
-          autoPlay
           showSkipControls
           progressJumpSteps={{backward:30000, forward:30000}}
           src={"http://localhost:3001/book?filename=" + book}
