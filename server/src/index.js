@@ -20,14 +20,14 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/position', async (req, res) => {
-  const posResults = await db.Position.findAll({where:{book:req.query.book}, order:[['updatedAt', 'DESC']]});
+app.get('/book/position', async (req, res) => {
+  const posResults = await db.Position.findAll({where:{book:req.query.filename}, order:[['updatedAt', 'DESC']]});
   res.send(posResults)
 });
 
-app.post('/position', async (req, res) => {
+app.post('/book/position', async (req, res) => {
   const position = {
-    book: req.body.book,
+    book: req.body.filename,
     position: req.body.position,
   }
 
@@ -37,10 +37,6 @@ app.post('/position', async (req, res) => {
 
   res.send(finalPosition);
 });
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
 
 app.get('/book', function(req, res) {
   // heavily based on https://betterprogramming.pub/video-stream-with-node-js-and-html5-320b3191a6b6
@@ -94,6 +90,10 @@ app.get('/books', async (req, res) => {
 });
 
 app.use('/', express.static('../client/build'));
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
 
 async function getBooks() {
   const bookFiles = fs.readdirSync('books').filter(path => path !== '.gitignore');
