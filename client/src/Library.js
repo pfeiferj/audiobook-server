@@ -6,11 +6,9 @@ export default function Library() {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    let mounted = true;
     axios.get('http://localhost:3001/books')
       .then(response => setBooks(response.data))
       .catch(e => console.error(e));
-    return () => mounted = false;
   }, []);
 
   return (
