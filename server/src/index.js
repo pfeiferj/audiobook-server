@@ -119,13 +119,13 @@ function getBookPath(filename) {
 }
 
 async function getMetadata(path) {
-  const {stdout} = await exec(`ffprobe -i "${path}" -print_format json -show_chapters -show_format -loglevel error`)
+  const {stdout} = await exec(`ffprobe -i "${path}" -print_format json -show_chapters -show_format -loglevel quiet`)
   const metadata = JSON.parse(stdout);
   return metadata;
 }
 
 async function getCoverArt(path) {
-  const {stdout} = await exec(`ffmpeg -i "${path}" -an -f singlejpeg -hide_banner -loglevel error -`, { encoding: "binary" })
+  const {stdout} = await exec(`ffmpeg -i "${path}" -an -f singlejpeg -hide_banner -loglevel quiet -`, { encoding: "binary" })
   const file = Buffer.from(stdout, "binary")
   return file;
 }
