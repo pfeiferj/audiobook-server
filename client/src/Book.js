@@ -4,6 +4,7 @@ import AudioPlayer from 'react-h5-audio-player';
 import get from 'lodash/get';
 import 'react-h5-audio-player/lib/styles.css';
 import { useParams } from 'react-router-dom';
+import { Panel } from 'rsuite';
 
 async function updatePosition(filename,position,positionId,setPositionId){
     const data = {
@@ -15,6 +16,22 @@ async function updatePosition(filename,position,positionId,setPositionId){
     if(!positionId) {
       setPositionId(response.data.id);
     }
+}
+
+function renderMetadata(metadata) {
+  const tags = metadata.format.tags;
+
+  return (
+    <div className="metadata">
+      <h2>{tags.title}</h2>
+      <h3>Author: {tags.artist}</h3>
+      <h3>Description:</h3> <p>{tags.comment}</p>
+      <br/>
+      <Panel header="All Tags" collapsible bordered>
+        {Object.keys(tags).map(tag => (<div><h4>{tag}:</h4><p>{tags[tag]}</p></div>))}
+      </Panel>
+    </div>
+  )
 }
 
 export default function Book() {
@@ -56,7 +73,7 @@ export default function Book() {
 
   return (
     <div className="Book">
-      <img alt="Book cover art" src={"http://localhost:3001/book/cover?filename="+book} />
+      <img alt="Book cover art" src={"http://localhost:3001/book/cover?filename="+book} style={{"display": "block", "margin-left": "auto", "margin-right": "auto", "maxWidth": "50%"}}/>
       <AudioPlayer
           showSkipControls
           progressJumpSteps={{backward:30000, forward:30000}}
@@ -66,6 +83,9 @@ export default function Book() {
           listenInterval={5000}
           onListen={onListen}
         />
+      <div className="Metadata">
+        {renderMetadata(metadata)}
+      </div>
     </div>
   );
 }
