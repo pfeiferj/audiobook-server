@@ -19,7 +19,7 @@ async function updatePosition(filename,position,positionId,setPositionId){
 }
 
 function renderMetadata(metadata) {
-  const tags = metadata.format.tags;
+  const tags = get(metadata, 'format.tags', {});
 
   return (
     <div className="metadata">
@@ -70,6 +70,7 @@ export default function Book() {
 
 
   document.title = get(metadata, "format.tags.title", "Audiobook");
+  global.meta = metadata;
 
   return (
     <div className="Book">
