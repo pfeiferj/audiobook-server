@@ -27,8 +27,23 @@ function formatPositionTime(time){
   return `${hours}:${minutes}:${seconds}`;
 }
 
-export default function Positions(props) {
-  const { positions, positionSelected } = props;
+
+export default function Chapters(props) {
+  const { chapters, chapterSelected } = props;
+  if(!(chapters && chapters.length)) {
+    return (<></>)
+  }
+
+  function renderChapter(chapter){
+    const text = chapter.tags.title !== undefined
+      ? chapter.tags.title
+      : formatPositionTime(parseFloat(chapter.start_time))
+    return (
+      <Row style={{marginRight: '-12px', marginLeft: '-12px'}}>
+        <Button onClick={onClick(chapterSelected, chapter)} style={{width:'100%'}}>{ text }</Button>
+      </Row>
+    )
+  }
 
   return (
     <Whisper
@@ -36,15 +51,11 @@ export default function Positions(props) {
       placement="top"
       speaker={(
         <Popover style={{maxHeight:'300px', overflow:'auto'}}>
-          {positions && positions.map(position => (
-            <Row style={{marginRight: '-12px', marginLeft: '-12px'}}>
-              <Button onClick={onClick(positionSelected, position)} style={{width:'100%',paddingRight:'8px'}}>{ formatPositionTime(position.position) }</Button>
-            </Row>
-          ))}
+          {chapters && chapters.map(renderChapter)}
         </Popover>
       )}
     >
-      <Button style={{marginRight:'4px'}}>Positions</Button>
+      <Button>Chapters</Button>
     </Whisper>
   );
 }

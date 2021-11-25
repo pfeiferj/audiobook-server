@@ -81,8 +81,12 @@ app.get('/book/metadata', async (req, res) => {
 app.get('/book/cover', async (req, res) => {
   const book = req.query.filename;
   const bookPath = getBookPath(book);
-  const cover = await getCoverArt(bookPath);
-  res.send(cover);
+  try {
+    const cover = await getCoverArt(bookPath);
+    res.send(cover);
+  } catch(e) {
+    res.send();
+  }
 });
 
 app.get('/books', async (req, res) => {

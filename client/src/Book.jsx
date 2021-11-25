@@ -6,6 +6,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import { useParams } from 'react-router-dom';
 import { Panel } from 'rsuite';
 import Positions from './Positions.jsx';
+import Chapters from './Chapters.jsx';
 
 async function updatePosition(filename,position,positionId,setPositionId){
     const data = {
@@ -71,27 +72,85 @@ export default function Book() {
     setPositionId(0);
   }
 
-  function onSelected(position) {
+  function onSelectedPosition(position) {
     setPositionId(position.id);
     player.current.audio.current.currentTime = position.position;
+  }
+
+  function onSelectedChapter(chapter) {
+    setPositionId(0);
+    player.current.audio.current.currentTime = parseFloat(chapter.start_time);
+  }
+
+  function onNext() {
+    const position = player.current.audio.current.currentTime;
+    for(let i = 0; i < metadata.chapters.length; i++) {
+      const chapterTime = parseFloat(metadata.chapters[i].start_time);
+      if(position < chapterTime) {
+        setPositionId(0);
+        player.current.audio.current.currentTime = chapterTime;
+        break;
+      }
+    }
+  }
+
+  function onPrevious() {
+    const position = player.current.audio.current.currentTime;
+    const bufferedPosition = position - 30; //trying to sync to skip back time, should use a const.
+    for(let i = metadata.chapters.length - 1; i >= 0; i--) {
+      const chapterTime = parseFloat(metadata.chapters[i].start_time);
+      if(bufferedPosition > chapterTime) {
+        setPositionId(0);
+        player.current.audio.current.currentTime = chapterTime;
+        break;
+      }
+    }
+  }
+
+  const hasChapters = metadata && metadata.chapters;
+  function getCurrentChapter() {
+    if(!hasChapters || !player) {
+      return (<span></span>);
+    }
+    const position = player.current.audio.current.currentTime;
+    for(let i = 0; i < metadata.chapters.length; i++) {
+      const chapterStartTime = parseFloat(metadata.chapters[i].start_time);
+      const chapterEndTime = parseFloat(metadata.chapters[i].end_time);
+      if(position > chapterStartTime && position < chapterEndTime) {
+        return (<span style={{marginRight:'4px'}}>{metadata.chapters[i].tags.title}</span>);
+      }
+    }
+    return (<span></span>);
   }
 
 
   document.title = get(metadata, "format.tags.title", "Audiobook");
   global.meta = metadata;
 
+  const additionalControls = [
+    (
+      <nobr style={{width:26, overflow:'visible'}}>
+        {getCurrentChapter()}
+        <Positions positionSelected={onSelectedPosition} positions={positions} />
+        <Chapters chapterSelected={onSelectedChapter} chapters={metadata.chapters} />
+      </nobr>
+    )
+  ];
+
   return (
     <div className="Book">
-      <img alt="Book cover art" src={"http://localhost:3001/book/cover?filename="+book} style={{"display": "block", "margin-left": "auto", "margin-right": "auto", "maxWidth": "50%"}}/>
+      <center><img alt="Book cover art" src={"http://localhost:3001/book/cover?filename="+book}/></center>
       <AudioPlayer
-          showSkipControls
+          showSkipControls={hasChapters && metadata.chapters.length > 1}
           progressJumpSteps={{backward:30000, forward:30000}}
           src={"http://localhost:3001/book?filename=" + book}
           onPause={onPause}
           ref={player}
           listenInterval={5000}
           onListen={onListen}
-          customAdditionalControls={[(<Positions positionSelected={onSelected} positions={positions} />)]}
+          onClickPrevious={onPrevious}
+          onClickNext={onNext}
+          customAdditionalControls={additionalControls}
         />
       <div className="Metadata">
         {renderMetadata(metadata)}
