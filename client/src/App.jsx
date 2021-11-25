@@ -9,8 +9,8 @@ import {
   Link
 } from "react-router-dom";
 
-import Book from './Book.js';
-import Library from './Library.js';
+import Book from './Book.jsx';
+import Library from './Library.jsx';
 
 const NavBrand = React.forwardRef(({ href, children, ...rest }, ref) => (
   <Link ref={ref} to={href} {...rest}>
