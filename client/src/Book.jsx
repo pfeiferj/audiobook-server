@@ -5,6 +5,7 @@ import get from 'lodash/get';
 import 'react-h5-audio-player/lib/styles.css';
 import { useParams } from 'react-router-dom';
 import { Panel } from 'rsuite';
+import Positions from './Positions.jsx';
 
 async function updatePosition(filename,position,positionId,setPositionId){
     const data = {
@@ -37,6 +38,7 @@ function renderMetadata(metadata) {
 export default function Book() {
   const [metadata, setMetadata] = useState({});
   const [positionId, setPositionId] = useState(0);
+  const [positions, setPositions] = useState([]);
 
   const { book } = useParams();
   const player = useRef()
@@ -53,6 +55,7 @@ export default function Book() {
     axios.get('http://localhost:3001/book/position?filename=' + book)
       .then(response => {
         if(response.data.length) {
+          setPositions(response.data)
           player.current.audio.current.currentTime = response.data[0].position;
         }
         player.current.audio.current.play()
@@ -83,6 +86,7 @@ export default function Book() {
           ref={player}
           listenInterval={5000}
           onListen={onListen}
+          customAdditionalControls={[(<Positions positions={positions} />)]}
         />
       <div className="Metadata">
         {renderMetadata(metadata)}
