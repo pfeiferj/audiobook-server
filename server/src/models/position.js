@@ -11,6 +11,13 @@ export default (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static attributeNames = {
+      id: 'id',
+      updatedAt: 'updatedAt',
+      createdAt: 'createdAt',
+      book: 'book',
+      position: 'position',
+    }
   };
   Position.init({
     book: DataTypes.STRING,
