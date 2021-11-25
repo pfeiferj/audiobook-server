@@ -71,6 +71,11 @@ export default function Book() {
     setPositionId(0);
   }
 
+  function onSelected(position) {
+    setPositionId(position.id);
+    player.current.audio.current.currentTime = position.position;
+  }
+
 
   document.title = get(metadata, "format.tags.title", "Audiobook");
   global.meta = metadata;
@@ -86,7 +91,7 @@ export default function Book() {
           ref={player}
           listenInterval={5000}
           onListen={onListen}
-          customAdditionalControls={[(<Positions positions={positions} />)]}
+          customAdditionalControls={[(<Positions positionSelected={onSelected} positions={positions} />)]}
         />
       <div className="Metadata">
         {renderMetadata(metadata)}
