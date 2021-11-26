@@ -1,0 +1,67 @@
+/library:
+  get:
+    summary: A library of books.
+    operationId: getLibrary
+    x-eov-operation-handler: library/library.cjs
+    responses:
+      '200':
+        description: A list of books in the library along with their metadata.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  path:
+                    type: string
+                  metadata:
+                    type: object
+                    properties:
+                      format:
+                        type: object
+                        properties:
+                          filename:
+                            type: string
+                          nb_streams:
+                            type: integer
+                          nb_programs:
+                            type: integer
+                          format_name:
+                            type: string
+                          format_long_name:
+                            type: string
+                          start_time:
+                            type: string
+                          duration:
+                            type: string
+                          size:
+                            type: string
+                          bit_rate:
+                            type: string
+                          probe_score:
+                            type: integer
+                          tags:
+                            type: object
+                      chapters:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            time_base:
+                              type: string
+                            start:
+                              type: integer
+                            start_time:
+                              type: string
+                            end:
+                              type: integer
+                            end_time:
+                              type: string
+                            tags:
+                              type: object
+                            

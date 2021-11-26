@@ -1,0 +1,63 @@
+/book/metadata:
+  get:
+    summary: A books metadata.
+    operationId: getBookMetadata
+    x-eov-operation-handler: book/metadata.cjs
+    parameters:
+      - name: filename
+        in: query
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Tags and chapters of a book.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  type: object
+                  properties:
+                    filename:
+                      type: string
+                    nb_streams:
+                      type: integer
+                    nb_programs:
+                      type: integer
+                    format_name:
+                      type: string
+                    format_long_name:
+                      type: string
+                    start_time:
+                      type: string
+                    duration:
+                      type: string
+                    size:
+                      type: string
+                    bit_rate:
+                      type: string
+                    probe_score:
+                      type: integer
+                    tags:
+                      type: object
+                chapters:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      time_base:
+                        type: string
+                      start:
+                        type: integer
+                      start_time:
+                        type: string
+                      end:
+                        type: integer
+                      end_time:
+                        type: string
+                      tags:
+                        type: object

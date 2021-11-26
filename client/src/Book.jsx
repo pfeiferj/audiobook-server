@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { Panel } from 'rsuite';
 import Positions from './Positions.jsx';
 import Chapters from './Chapters.jsx';
+import queryString from 'query-string';
 
 async function updatePosition(filename,position,positionId,setPositionId){
     const data = {
@@ -45,7 +46,7 @@ export default function Book() {
   const player = useRef()
 
   useEffect(() => {
-    axios.get('http://localhost:3001/book/metadata?filename=' + book)
+    axios.get('http://localhost:3001/book/metadata?'+queryString.stringify({filename:book}))
       .then(response => setMetadata(response.data))
       .catch(e => console.error(e));
 
@@ -53,7 +54,7 @@ export default function Book() {
   }, [book]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/book/position?filename=' + book)
+    axios.get('http://localhost:3001/book/position?'+queryString.stringify({filename:book}))
       .then(response => {
         if(response.data.length) {
           setPositions(response.data)
@@ -139,11 +140,11 @@ export default function Book() {
 
   return (
     <div className="Book">
-      <center><img alt="Book cover art" src={"http://localhost:3001/book/cover?filename="+book}/></center>
+      <center><img alt="Book cover art" src={"http://localhost:3001/book/cover?"+queryString.stringify({filename:book})}/></center>
       <AudioPlayer
           showSkipControls={hasChapters && metadata.chapters.length > 1}
           progressJumpSteps={{backward:30000, forward:30000}}
-          src={"http://localhost:3001/book?filename=" + book}
+          src={"http://localhost:3001/book?"+queryString.stringify({filename:book})}
           onPause={onPause}
           ref={player}
           listenInterval={5000}

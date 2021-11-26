@@ -1,0 +1,65 @@
+/book/position:
+  post:
+    summary: Update a listening position in a book.
+    operationId: updateBookPosition
+    x-eov-operation-handler: book/position.cjs
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              filename:
+                type: string
+              position:
+                type: number
+              updates:
+                type: number
+    responses:
+      '200':
+        description: The updated position in a book.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                book:
+                  type: string
+                position:
+                  type: number
+                updatedAt:
+                  type: string
+                createdAt:
+                  type: string
+  get:
+    summary: All of the positions stored for a book.
+    operationId: getBookPositions
+    x-eov-operation-handler: book/position.cjs
+    parameters:
+      - name: filename
+        in: query
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: All of the positions stored for a book.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  book:
+                    type: string
+                  position:
+                    type: number
+                  updatedAt:
+                    type: string
+                  createdAt:
+                    type: string

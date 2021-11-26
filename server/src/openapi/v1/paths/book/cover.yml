@@ -1,0 +1,19 @@
+/book/cover:
+  get:
+    summary: A book cover image.
+    operationId: getBookCover
+    x-eov-operation-handler: book/cover.cjs
+    parameters:
+      - name: filename
+        in: query
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A book cover image.
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
