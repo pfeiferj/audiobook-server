@@ -39,8 +39,8 @@ export default function Chapters(props) {
       ? chapter.tags.title
       : formatPositionTime(parseFloat(chapter.start_time))
     return (
-      <Row style={{marginRight: '-12px', marginLeft: '-12px'}}>
-        <Button onClick={onClick(chapterSelected, chapter)} style={{width:'100%'}}>{ text }</Button>
+      <Row className="popover-row">
+        <Button onClick={onClick(chapterSelected, chapter)} className="popover-button">{ text }</Button>
       </Row>
     )
   }
@@ -50,7 +50,7 @@ export default function Chapters(props) {
       trigger="click"
       placement="top"
       speaker={(
-        <Popover style={{maxHeight:'300px', overflow:'auto'}}>
+        <Popover className="popover-height">
           {chapters && chapters.map(renderChapter)}
         </Popover>
       )}

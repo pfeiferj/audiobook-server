@@ -1,5 +1,6 @@
 import React from 'react';
 import { Popover, Button, Whisper, Row } from 'rsuite';
+import '../popover.less';
 
 function onClick(selectedCallback, position) {
   return () => {
@@ -35,16 +36,16 @@ export default function Positions(props) {
       trigger="click"
       placement="top"
       speaker={(
-        <Popover style={{maxHeight:'300px', overflow:'auto'}}>
+        <Popover className="popover-height">
           {positions && positions.map(position => (
-            <Row style={{marginRight: '-12px', marginLeft: '-12px'}}>
-              <Button onClick={onClick(positionSelected, position)} style={{width:'100%',paddingRight:'8px'}}>{ formatPositionTime(position.position) }</Button>
+            <Row className="popover-row">
+              <Button onClick={onClick(positionSelected, position)} className="popover-button">{ formatPositionTime(position.position) }</Button>
             </Row>
           ))}
         </Popover>
       )}
     >
-      <Button style={{marginRight:'4px'}}>Positions</Button>
+      <Button className="right-spacer">Positions</Button>
     </Whisper>
   );
 }

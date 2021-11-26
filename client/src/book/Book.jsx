@@ -5,9 +5,10 @@ import get from 'lodash/get';
 import 'react-h5-audio-player/lib/styles.css';
 import { useParams } from 'react-router-dom';
 import { Panel } from 'rsuite';
-import Positions from './Positions.jsx';
-import Chapters from './Chapters.jsx';
+import Positions from './elements/positions/Positions.jsx';
+import Chapters from './elements/chapters/Chapters.jsx';
 import queryString from 'query-string';
+import './book.less';
 
 async function updatePosition(filename,position,positionId,setPositionId){
     const data = {
@@ -118,7 +119,7 @@ export default function Book() {
       const chapterStartTime = parseFloat(metadata.chapters[i].start_time);
       const chapterEndTime = parseFloat(metadata.chapters[i].end_time);
       if(position > chapterStartTime && position < chapterEndTime) {
-        return (<span style={{marginRight:'4px'}}>{metadata.chapters[i].tags.title}</span>);
+        return (<span className="right-spacer">{metadata.chapters[i].tags.title}</span>);
       }
     }
     return (<span></span>);
@@ -130,7 +131,7 @@ export default function Book() {
 
   const additionalControls = [
     (
-      <nobr style={{width:26, overflow:'visible'}}>
+      <nobr className="controls-width-fix">
         {getCurrentChapter()}
         <Positions positionSelected={onSelectedPosition} positions={positions} />
         <Chapters chapterSelected={onSelectedChapter} chapters={metadata.chapters} />

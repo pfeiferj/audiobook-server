@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Nav, Button, CustomProvider } from 'rsuite';
+import { Navbar, CustomProvider } from 'rsuite';
 import 'rsuite/styles/index.less';
 
 import {
@@ -9,8 +9,8 @@ import {
   Link
 } from "react-router-dom";
 
-import Book from './Book.jsx';
-import Library from './Library.jsx';
+import Book from './book/Book.jsx';
+import Library from './library/Library.jsx';
 
 const NavBrand = React.forwardRef(({ href, children, ...rest }, ref) => (
   <Link ref={ref} to={href} {...rest}>
@@ -21,7 +21,7 @@ const NavBrand = React.forwardRef(({ href, children, ...rest }, ref) => (
 function App() {
   return (
     <Router>
-      <CustomProvider theme="light">
+      <CustomProvider theme="dark">
         <div>
           <Navbar style={{marginBottom:'8px'}}>
             <Navbar.Brand as={NavBrand} href="/">
@@ -39,10 +39,6 @@ function App() {
       </CustomProvider>
     </Router>
   );
-}
-
-function Home() {
-  return <h2>Home</h2>;
 }
 
 export default App;
