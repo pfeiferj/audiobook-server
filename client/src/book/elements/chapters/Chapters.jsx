@@ -1,5 +1,6 @@
 import React from 'react';
 import { Popover, Button, Whisper, Row } from 'rsuite';
+import '../popover.less';
 
 function onClick(selectedCallback, position) {
   return () => {
