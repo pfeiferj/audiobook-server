@@ -16,7 +16,9 @@ async function updatePosition(filename,position,positionId,setPositionId){
       position,
       updates: positionId
     }
-    const response = await axios.post('http://localhost:3001/book/position', data);
+    const base_url = new URL(window.location.origin);
+    base_url.port = 3001;
+    const response = await axios.post(base_url.origin + '/book/position', data);
     if(!positionId) {
       setPositionId(response.data.id);
     }
@@ -47,7 +49,9 @@ export default function Book() {
   const player = useRef()
 
   useEffect(() => {
-    axios.get('http://localhost:3001/book/metadata?'+queryString.stringify({filename:book}))
+    const base_url = new URL(window.location.origin);
+    base_url.port = 3001;
+    axios.get(base_url.origin + '/book/metadata?'+queryString.stringify({filename:book}))
       .then(response => setMetadata(response.data))
       .catch(e => console.error(e));
 
@@ -55,7 +59,9 @@ export default function Book() {
   }, [book]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/book/position?'+queryString.stringify({filename:book}))
+    const base_url = new URL(window.location.origin);
+    base_url.port = 3001;
+    axios.get(base_url.origin + '/book/position?'+queryString.stringify({filename:book}))
       .then(response => {
         if(response.data.length) {
           setPositions(response.data)

@@ -9,7 +9,9 @@ export default function Library() {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/library')
+    const base_url = new URL(window.location.origin);
+    base_url.port = 3001;
+    axios.get(base_url.origin + '/library')
       .then(response => setBooks(response.data))
       .catch(e => console.error(e));
   }, []);
