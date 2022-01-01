@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm test -w client -- --watchAll=false && npm test -w server",
     "build": "npm run build -w client",
-    "start": "npm start -w server",
+    "start": "concurrently \"npm start -w server\" \"npm run serve -w client\"",
     "start:build": "npm run build && npm start",
     "dev": "concurrently \"npm run watch -w server\" \"npm start -w client\""
   },
@@ -27,7 +27,7 @@
     "server",
     "client"
   ],
-  "devDependencies": {
+  "dependencies": {
     "concurrently": "^6.3.0"
   }
 }
