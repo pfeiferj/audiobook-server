@@ -14,6 +14,7 @@ const app = express()
 app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded())
+app.use('/', express.static('../client/build'))
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(v1Base))
 
@@ -34,6 +35,7 @@ app.use((err, req, res, next) => {
     errors: err.errors,
   });
 });
+
 
 const PORT = 3001
 
