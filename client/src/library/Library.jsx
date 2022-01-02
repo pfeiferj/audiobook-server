@@ -7,10 +7,10 @@ import './Library.less';
 
 export default function Library() {
   const [books, setBooks] = useState([]);
+  const base_url = new URL(window.location.origin);
+  base_url.port = 3001;
 
   useEffect(() => {
-    const base_url = new URL(window.location.origin);
-    base_url.port = 3001;
     axios.get(base_url.origin + '/library')
       .then(response => setBooks(response.data))
       .catch(e => console.error(e));
@@ -25,7 +25,7 @@ export default function Library() {
             <Link to={"/book/" + book.path}>
               <Col lg="6" md="12" sm="12" xs="24">
                   <Panel header={book.title} shaded bordered bodyFill className="panel-flex">
-                        <img className="library-cover-image" alt="Book cover art" src={"http://localhost:3001/book/cover?"+queryString.stringify({filename:book.path})} />
+                        <img className="library-cover-image" alt="Book cover art" src={base_url.origin + "/book/cover?"+queryString.stringify({filename:book.path})} />
                   </Panel>
               </Col>
             </Link>
