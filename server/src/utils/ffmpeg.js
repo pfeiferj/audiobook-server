@@ -10,7 +10,7 @@ export async function getAudioCodec(path) {
 }
 
 export async function getCoverArt(path) {
-  const { stdout } = await exec(`ffmpeg -i "${path}" -an -f singlejpeg -hide_banner -loglevel quiet -`, { encoding: "binary" })
+  const { stdout } = await exec(`ffmpeg -i "${path}" -map 0:v -map -0:V -f mjpeg -hide_banner -loglevel quiet -`, { encoding: "binary" })
   const file = Buffer.from(stdout, "binary")
   return file;
 }
