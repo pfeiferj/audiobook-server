@@ -41,5 +41,16 @@ module.exports = {
     }
     res.writeHead(206, head);
     file.pipe(res);
+  },
+  getBookDownload: async function(req, res) {
+    const { getAudioCodec } = await ffmpeg;
+    const book = get(req, "query.filename", "");
+    const safeBookPath = getSafeBookPath(book);
+    const file = fs.createReadStream(safeBookPath)
+    const head = {
+      'Content-Type': `audio/${await getAudioCodec(safeBookPath)}`,
+    }
+    res.writeHead(200, head);
+    file.pipe(res);
   }
 }

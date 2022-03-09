@@ -17,3 +17,22 @@
             schema:
               type: string
               format: binary
+/book/download:
+  get:
+    summary: A book audio file.
+    operationId: getBookDownload
+    x-eov-operation-handler: book/book.cjs
+    parameters:
+      - name: filename
+        in: query
+        required: true
+        schema:
+          type: string
+    responses:
+      '206':
+        description: A partial response of a book.
+        content:
+          audio/*:
+            schema:
+              type: string
+              format: binary

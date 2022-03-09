@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import { Panel, Row, Col, Grid } from 'rsuite';
 import queryString from 'query-string';
 import './Library.less';
+import { getServerUrl } from '../utils/server.js';
 
 export default function Library() {
   const [books, setBooks] = useState([]);
-  const base_url = new URL(window.location.origin);
-  base_url.port = 3001;
+  const base_url = getServerUrl();
 
   useEffect(() => {
     axios.get(base_url.origin + '/library')

@@ -5,10 +5,12 @@ import get from 'lodash/get';
 import 'react-h5-audio-player/lib/styles.css';
 import { useParams } from 'react-router-dom';
 import { Panel } from 'rsuite';
+import Download from './elements/download/Download.jsx';
 import Positions from './elements/positions/Positions.jsx';
 import Chapters from './elements/chapters/Chapters.jsx';
 import queryString from 'query-string';
 import './book.less';
+import { getServerUrl } from '../utils/server.js';
 
 async function updatePosition(filename,position,positionId,setPositionId){
     const data = {
@@ -16,8 +18,7 @@ async function updatePosition(filename,position,positionId,setPositionId){
       position,
       updates: positionId
     }
-    const base_url = new URL(window.location.origin);
-    base_url.port = 3001;
+    const base_url = getServerUrl();
     const response = await axios.post(base_url.origin + '/book/position', data);
     if(!positionId) {
       setPositionId(response.data.id);
@@ -47,8 +48,7 @@ export default function Book() {
 
   const { book } = useParams();
   const player = useRef()
-  const base_url = new URL(window.location.origin);
-  base_url.port = 3001;
+  const base_url = getServerUrl();
 
   useEffect(() => {
     axios.get(base_url.origin + '/book/metadata?'+queryString.stringify({filename:book}))
@@ -137,6 +137,7 @@ export default function Book() {
     (
       <nobr className="controls-width-fix">
         {getCurrentChapter()}
+        <Download video={book} />
         <Positions positionSelected={onSelectedPosition} positions={positions} />
         <Chapters chapterSelected={onSelectedChapter} chapters={metadata.chapters} />
       </nobr>
