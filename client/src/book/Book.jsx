@@ -11,19 +11,7 @@ import Chapters from './elements/chapters/Chapters.jsx';
 import queryString from 'query-string';
 import './book.less';
 import { getServerUrl } from '../utils/server.js';
-
-async function updatePosition(filename,position,positionId,setPositionId){
-    const data = {
-      filename,
-      position,
-      updates: positionId
-    }
-    const base_url = getServerUrl();
-    const response = await axios.post(base_url.origin + '/book/position', data);
-    if(!positionId) {
-      setPositionId(response.data.id);
-    }
-}
+import {updatePosition} from '../utils/db.js';
 
 function renderMetadata(metadata) {
   const tags = get(metadata, 'format.tags', {});

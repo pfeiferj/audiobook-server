@@ -54,7 +54,7 @@ const fromCache = request =>
     .open(CURRENT_CACHE)
     .then(cache =>
       cache
-        .match(request)
+        .match(request.clone())
         .then(matching => matching || cache.match('/offline/'))
     );
 
@@ -63,7 +63,7 @@ const update = request =>
   caches
     .open(CURRENT_CACHE)
     .then(cache =>
-      cache.match(request).then(matching => {
+      cache.match(request.clone()).then(matching => {
         if(matching) { //only cache specified files
           return fetch(request).then(response => cache.put(request, response))
         } else {
@@ -76,7 +76,7 @@ const update = request =>
 // from the network with a timeout, if something fails serve from cache)
 self.addEventListener('fetch', evt => {
   evt.respondWith(
-    fromNetwork(evt.request, 10000).catch(() => fromCache(evt.request))
+    fromNetwork(evt.request.clone(), 10000).catch(() => fromCache(evt.request.clone()))
   );
-  evt.waitUntil(update(evt.request));
+  evt.waitUntil(update(evt.request.clone()));
 });
