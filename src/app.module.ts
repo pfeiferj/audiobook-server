@@ -11,6 +11,8 @@ import { HealthModule } from './health/health.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SetupModule } from './setup/setup.module';
 import { FfmpegService } from './ffmpeg/ffmpeg.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import * as Joi from 'joi';
 
 export interface Config {
@@ -39,6 +41,9 @@ const joiValidation = Joi.object<Config>({
       cache: true,
       isGlobal: true,
       validationSchema: joiValidation,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
     }),
     SequelizeModule.forRootAsync({
       useFactory: async (configService: ConfigService<Config>) => ({
