@@ -28,7 +28,7 @@ const joiValidation = Joi.object<Config>({
   NODE_ENV: Joi.string()
     .valid('development', 'production', 'test', 'provision')
     .default('development'),
-  PORT: Joi.number().default(3000),
+  PORT: Joi.number().default(8080),
   BCRYPT_ROUNDS: Joi.number().default(11),
   THROTTLER_TTL: Joi.number().default(60),
   THROTTLER_LIMIT: Joi.number().default(30),
