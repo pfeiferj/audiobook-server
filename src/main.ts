@@ -11,7 +11,7 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
-  app.use(helmet());
+  app.use(helmet({ contentSecurityPolicy: false }));
   app.enableCors();
 
   const config = new DocumentBuilder()

@@ -44,6 +44,7 @@ const joiValidation = Joi.object<Config>({
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
+      exclude: ['/v1/*'],
     }),
     SequelizeModule.forRootAsync({
       useFactory: async (configService: ConfigService<Config>) => ({
