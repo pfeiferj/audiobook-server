@@ -53,6 +53,17 @@ export class BooksController {
     return this.booksService.chapters(filename);
   }
 
+  @Get(':filename/metadata')
+  getMetadata(@Param('filename') filename: string) {
+    return this.booksService.metadata(filename);
+  }
+
+  //update positions
+  @Patch(':filename/positions')
+  updatePositions(@Param('filename') filename: string, @Body() positions: any) {
+    return this.booksService.updatePositions(filename, positions);
+  }
+
   @Patch(':filename')
   update(
     @Param('filename') filename: string,

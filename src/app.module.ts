@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { BooksModule } from './books/books.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/models/user.model';
+import { Position } from './books/models/position.model';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -50,7 +51,7 @@ const joiValidation = Joi.object<Config>({
       useFactory: async (configService: ConfigService<Config>) => ({
         dialect: 'sqlite',
         storage: configService.get('SQLITE_FILE'),
-        models: [User],
+        models: [User, Position],
       }),
       inject: [ConfigService],
     }),

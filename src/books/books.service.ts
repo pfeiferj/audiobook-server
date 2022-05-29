@@ -6,6 +6,7 @@ import { createReadStream, readdir, unlink } from 'fs';
 import { FfmpegService } from '../ffmpeg/ffmpeg.service';
 import { promisify } from 'util';
 import { Express, Request } from 'express';
+import { Position } from './models/position.model';
 
 import * as fs from 'fs';
 import {
@@ -14,6 +15,7 @@ import {
   ContentProvider,
   createPartialContentHandler,
 } from 'express-partial-content';
+import { InjectModel } from '@nestjs/sequelize';
 
 const statAsync = promisify(fs.stat);
 const existsAsync = promisify(fs.exists);
@@ -61,7 +63,11 @@ function getSafeBookPath(filename: string) {
 
 @Injectable()
 export class BooksService {
-  constructor(private ffmpegService: FfmpegService) {}
+  constructor(
+    @InjectModel(Position)
+    private readonly positionModel: typeof Position,
+    private readonly ffmpegService: FfmpegService,
+  ) {}
 
   create(createBookDto, file: Express.Multer.File) {
     return 'This action adds a new book';
@@ -108,6 +114,57 @@ export class BooksService {
     }
 
     return '';
+  }
+
+  async metadata(filename: string) {
+    const { getMetadata } = this.ffmpegService;
+    const safeBookPath = getSafeBookPath(filename);
+    const metadata = await getMetadata(safeBookPath);
+    return metadata;
+  }
+
+  //update positions
+  async updatePositions(filename: string, positions: any[]) {
+    const savedPositions = await this.positionModel.findAll({
+      where: { book: filename },
+    });
+    for (const position of positions) {
+      const savedPosition = savedPositions.find(
+        (savedPosition) => savedPosition.id === position.id,
+      );
+      if (
+        savedPosition &&
+        savedPosition.createdAt.getTime() ==
+          new Date(position?.createdAt).getTime()
+      ) {
+        await savedPosition.update({
+          position: position,
+        });
+      } else {
+        await this.positionModel.create({
+          position: position.position,
+          book: filename,
+          timestamp: position.timestamp,
+        });
+      }
+    }
+    // TODO: do not do two extra queries
+    const updatedPositions = await this.positionModel.findAll({
+      where: { book: filename },
+    });
+
+    if (updatedPositions.length > 30) {
+      for (const position of updatedPositions) {
+        if (position.createdAt < Date.now() - 24 * 60 * 60 * 1000) {
+          await position.destroy();
+        }
+      }
+    }
+
+    const finalPositions = await this.positionModel.findAll({
+      where: { book: filename },
+    });
+    return finalPositions;
   }
 
   async cover(filename: string) {
