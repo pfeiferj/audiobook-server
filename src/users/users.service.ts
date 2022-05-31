@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectModel } from '@nestjs/sequelize';
 import { User } from './models/user.model';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User)
+    @Inject(User)
     private userModel: typeof User,
   ) {}
 
@@ -15,15 +14,13 @@ export class UsersService {
     return 'This action adds a new user';
   }
 
-  findAll(): Promise<User[]> {
-    return this.userModel.findAll();
+  async findAll(): Promise<User[]> {
+    return await this.userModel.query();
   }
 
   findOne(name: string) {
-    return this.userModel.findOne({
-      where: {
-        name,
-      },
+    return this.userModel.query().findOne({
+      name,
     });
   }
 
@@ -33,6 +30,6 @@ export class UsersService {
 
   async remove(name: string): Promise<void> {
     const user = await this.findOne(name);
-    await user.destroy();
+    await this.userModel.query().deleteById(user.id);
   }
 }

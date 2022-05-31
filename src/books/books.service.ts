@@ -1,4 +1,4 @@
-import { Injectable, StreamableFile } from '@nestjs/common';
+import { Injectable, StreamableFile, Inject } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { join, sep } from 'path';
@@ -15,7 +15,6 @@ import {
   ContentProvider,
   createPartialContentHandler,
 } from 'express-partial-content';
-import { InjectModel } from '@nestjs/sequelize';
 
 const statAsync = promisify(fs.stat);
 const existsAsync = promisify(fs.exists);
@@ -64,7 +63,7 @@ function getSafeBookPath(filename: string) {
 @Injectable()
 export class BooksService {
   constructor(
-    @InjectModel(Position)
+    @Inject(Position)
     private readonly positionModel: typeof Position,
     private readonly ffmpegService: FfmpegService,
   ) {}
@@ -125,45 +124,43 @@ export class BooksService {
 
   //update positions
   async updatePositions(filename: string, positions: any[]) {
-    const savedPositions = await this.positionModel.findAll({
-      where: { book: filename },
+    const savedPositions = await this.positionModel.query().where({
+      book: filename,
     });
     for (const position of positions) {
       const savedPosition = savedPositions.find(
         (savedPosition) => savedPosition.id === position.id,
       );
-      if (
-        savedPosition &&
-        savedPosition.createdAt.getTime() ==
-          new Date(position?.createdAt).getTime()
-      ) {
-        await savedPosition.update({
-          position: position,
-        });
+      if (savedPosition && savedPosition.created_at == position?.created_at) {
+        await this.positionModel
+          .query()
+          .patchAndFetchById(position.id, position);
       } else {
-        await this.positionModel.create({
-          position: position.position,
-          book: filename,
-          timestamp: position.timestamp,
-        });
+        const newPosition = new Position();
+        newPosition.position = position.position;
+        newPosition.book = filename;
+        newPosition.timestamp = position.timestamp;
+        console.log(newPosition);
+        await this.positionModel.query().insert(position);
       }
     }
     // TODO: do not do two extra queries
-    const updatedPositions = await this.positionModel.findAll({
-      where: { book: filename },
+    const updatedPositions = await this.positionModel.query().where({
+      book: filename,
     });
 
     if (updatedPositions.length > 30) {
       for (const position of updatedPositions) {
-        if (position.createdAt < Date.now() - 24 * 60 * 60 * 1000) {
-          await position.destroy();
+        if (position.created_at < Date.now() - 24 * 60 * 60 * 1000) {
+          await this.positionModel.query().deleteById(position.id);
         }
       }
     }
 
-    const finalPositions = await this.positionModel.findAll({
-      where: { book: filename },
-    });
+    const finalPositions = await this.positionModel
+      .query()
+      .where({ book: filename })
+      .orderBy('timestamp');
     return finalPositions;
   }
 

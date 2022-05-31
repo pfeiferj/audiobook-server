@@ -1,18 +1,23 @@
-import { Column, Model, Table, PrimaryKey } from 'sequelize-typescript';
+import { Model } from 'objection';
 
-@Table
 export class Position extends Model {
-  @PrimaryKey
-  @Column
-  id: number;
+  static tableName = 'positions';
 
-  @Column
+  id!: number;
+
   book: string;
 
-  @Column
   position: number;
 
-  @Column
   timestamp: number;
 
+  $beforeInsert() {
+    this.created_at = Date.now();
+  }
+  created_at!: number;
+
+  $beforeUpdate() {
+    this.updated_at = Date.now();
+  }
+  updated_at!: number;
 }

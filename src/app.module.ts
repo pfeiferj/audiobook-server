@@ -1,12 +1,9 @@
 import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BooksModule } from './books/books.module';
 import { UsersModule } from './users/users.module';
-import { User } from './users/models/user.model';
-import { Position } from './books/models/position.model';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -15,6 +12,7 @@ import { FfmpegService } from './ffmpeg/ffmpeg.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import * as Joi from 'joi';
+import { ObjectionModule } from '@willsoto/nestjs-objection';
 
 export interface Config {
   NODE_ENV: string;
@@ -47,13 +45,14 @@ const joiValidation = Joi.object<Config>({
       rootPath: join(__dirname, '..', 'client'),
       exclude: ['/v1/*'],
     }),
-    SequelizeModule.forRootAsync({
-      useFactory: async (configService: ConfigService<Config>) => ({
-        dialect: 'sqlite',
-        storage: configService.get('SQLITE_FILE'),
-        models: [User, Position],
-      }),
-      inject: [ConfigService],
+    ObjectionModule.register({
+      config: {
+        client: 'sqlite3',
+        useNullAsDefault: true,
+        connection: {
+          filename: './example.sqlite',
+        },
+      },
     }),
     ThrottlerModule.forRootAsync({
       useFactory: async (configService: ConfigService<Config>) => ({

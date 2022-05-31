@@ -1,17 +1,15 @@
-import { Column, Model, Table, PrimaryKey } from 'sequelize-typescript';
+import { Model } from 'objection'
 
-@Table
 export class User extends Model {
-  @PrimaryKey
-  @Column
+  static tableName = 'users'
+
+  id!: number;
+
   name: string;
 
-  @Column
   password: string;
 
-  @Column({ defaultValue: true })
-  isActive: boolean;
+  isActive!: boolean;
 
-  @Column({ defaultValue: false })
-  isAdmin: boolean;
+  isAdmin!: boolean;
 }
