@@ -122,46 +122,51 @@ export class BooksService {
     return metadata;
   }
 
-  //update positions
   async updatePositions(filename: string, positions: any[]) {
-    const savedPositions = await this.positionModel.query().where({
-      book: filename,
-    });
     for (const position of positions) {
-      const savedPosition = savedPositions.find(
-        (savedPosition) => savedPosition.id === position.id,
-      );
-      if (savedPosition && savedPosition.created_at == position?.created_at) {
-        await this.positionModel
+      if (position.id) {
+        const dbPosition = await this.positionModel
           .query()
-          .patchAndFetchById(position.id, position);
+          .findById(position.id);
+        if (dbPosition.timestamp < position.timestamp) {
+          await this.positionModel
+            .query()
+            .patchAndFetchById(position.id, position);
+        }
       } else {
         const newPosition = new Position();
+        newPosition.client_id = position.client_id;
         newPosition.position = position.position;
         newPosition.book = filename;
         newPosition.timestamp = position.timestamp;
-        console.log(newPosition);
         await this.positionModel.query().insert(position);
       }
     }
-    // TODO: do not do two extra queries
     const updatedPositions = await this.positionModel.query().where({
       book: filename,
     });
 
+    const finalPositions = [];
     if (updatedPositions.length > 30) {
       for (const position of updatedPositions) {
         if (position.created_at < Date.now() - 24 * 60 * 60 * 1000) {
           await this.positionModel.query().deleteById(position.id);
+        } else {
+          finalPositions.push(position);
         }
       }
+    } else {
+      finalPositions.push(...updatedPositions);
     }
 
-    const finalPositions = await this.positionModel
-      .query()
-      .where({ book: filename })
-      .orderBy('timestamp');
-    return finalPositions;
+    return finalPositions.sort((a, b) => a.timestamp - b.timestamp);
+  }
+
+  async getPositions(filename: string) {
+    const positions = await this.positionModel.query().where({
+      book: filename,
+    });
+    return positions;
   }
 
   async cover(filename: string) {

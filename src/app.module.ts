@@ -50,7 +50,7 @@ const joiValidation = Joi.object<Config>({
         client: 'sqlite3',
         useNullAsDefault: true,
         connection: {
-          filename: './example.sqlite',
+          filename: './db.sqlite',
         },
       },
     }),

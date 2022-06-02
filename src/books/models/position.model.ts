@@ -5,6 +5,8 @@ export class Position extends Model {
 
   id!: number;
 
+  client_id?: number;
+
   book: string;
 
   position: number;

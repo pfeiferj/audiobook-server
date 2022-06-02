@@ -58,10 +58,14 @@ export class BooksController {
     return this.booksService.metadata(filename);
   }
 
-  //update positions
   @Patch(':filename/positions')
   updatePositions(@Param('filename') filename: string, @Body() positions: any) {
     return this.booksService.updatePositions(filename, positions);
+  }
+
+  @Get(':filename/positions')
+  getPositions(@Param('filename') filename: string) {
+    return this.booksService.getPositions(filename);
   }
 
   @Patch(':filename')
